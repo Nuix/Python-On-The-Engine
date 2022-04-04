@@ -19,8 +19,8 @@ def initialize_environment():
                   python_env_path + r'\Library\bin;' + python_env_path + r'\bin'
     path = os.getenv('PATH') + ';' + python_path
 
-    os.putenv(PYTHONPATH=python_path)
-    os.putenv(PATH=path)
+    os.environ['PYTHONPATH'] = python_path
+    os.environ['PATH'] = path
 
 
 def execute_scoring(path_to_images):
@@ -28,7 +28,7 @@ def execute_scoring(path_to_images):
 
     cmd_args = ['python.exe', python_script, path_to_images]
 
-    predict_process = Popen(cmd_args, stdout=PIPE, universal_newlines=True)
+    predict_process = Popen(cmd_args, stdout=PIPE, universal_newlines=True, shell=True)
 
     return_code = None
     while return_code is None:
@@ -41,5 +41,5 @@ def execute_scoring(path_to_images):
             output = predict_process.stdout.readlines()
             print(output)
 
-
+initialize_environment()
 execute_scoring(working_path)
