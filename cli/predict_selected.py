@@ -41,5 +41,25 @@ def execute_scoring(path_to_images):
             output = predict_process.stdout.readlines()
             print(output)
 
-initialize_environment()
-execute_scoring(working_path)
+
+def build_exporter(output_dir):
+    exporter = utilities.createBatchExporter(output_dir)
+    exporter.addProduct('native', { 'naming': 'item_name' })
+    exporter.setTraversalOptions({
+        'strategy': 'items',
+        'deduplication': 'md5',
+        'sortOrder': 'position'
+    })
+    return exporter
+
+
+def export_selection(output_dir):
+    items_to_export = [item for item in current_selected_items if item.getName().lower().endswith('.jpg') or item.getName().lower().endswith('.jpeg')]
+    exporter = build_exporter(output_dir)
+    exporter.exportItems(items_to_export)
+
+
+if __name__ == "__builtin__":
+    export_selection(working_path)
+    initialize_environment()
+    execute_scoring(working_path)

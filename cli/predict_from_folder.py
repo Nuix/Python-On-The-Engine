@@ -36,12 +36,14 @@ be updated as well.  The results should not be considered correct until the "don
 errors list is empty then there was no error and all images were successful.
 """
 
-# input_dir = r"C:\Projects\RestData\Exports\Enron Images\Items\sub"
-
 
 def get_file_list(folder):
-    return [os.path.join(folder, name) for name in os.listdir(folder)
-            if os.path.isfile(os.path.join(folder, name)) and name.lower().endswith('.jpg')]
+    file_paths = []
+    for root, dirs, names in os.walk(folder):
+        for name in names:
+            file_paths.append(os.path.join(root, name))
+    return [name for name in file_paths
+            if name.lower().endswith('.jpg') or name.lower().endswith('.jpeg')]
 
 
 def get_image_generator(file_list, output_obj, output_file):
@@ -91,6 +93,9 @@ def main(input_dir):
 
     output_obj['done'] = True
     output_obj['status']['progress'] = 100
+
+    with open(results, mode='w') as status:
+        json.dump(output_obj, status)
 
 
 if __name__ == "__main__":
