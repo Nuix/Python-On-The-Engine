@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 
 from PIL import Image
 from img_classifier import predictor
@@ -35,8 +36,7 @@ be updated as well.  The results should not be considered correct until the "don
 errors list is empty then there was no error and all images were successful.
 """
 
-input_dir = r"C:\Projects\RestData\Exports\Enron Images\Items\sub"
-results = os.path.join(input_dir, 'inference.json')
+# input_dir = r"C:\Projects\RestData\Exports\Enron Images\Items\sub"
 
 
 def get_file_list(folder):
@@ -44,7 +44,7 @@ def get_file_list(folder):
             if os.path.isfile(os.path.join(folder, name)) and name.lower().endswith('.jpg')]
 
 
-def get_image_generator(file_list, output_obj):
+def get_image_generator(file_list, output_obj, output_file):
     status_obj = output_obj['status']
     item_count = len(file_list)
 
@@ -56,13 +56,14 @@ def get_image_generator(file_list, output_obj):
             status_obj['current_item'] = index + 1
             percent_complete = int((index / item_count) * 100)
             status_obj['progress'] = percent_complete
-            with open(results, mode='w') as status:
+            with open(output_file, mode='w') as status:
                 json.dump(output_obj, status)
 
     return read_image
 
 
-def main():
+def main(input_dir):
+    results = os.path.join(input_dir, 'inference.json')
     image_list = get_file_list(input_dir)
 
     errors = []
@@ -73,7 +74,7 @@ def main():
     with open(results, mode='w') as status:
         json.dump(output_obj, status)
 
-    inferences = predictor.predict(get_image_generator(image_list, output_obj))
+    inferences = predictor.predict(get_image_generator(image_list, output_obj, results))
 
     for index, inference in enumerate(inferences):
         img = image_list[index]
@@ -88,6 +89,13 @@ def main():
         with open(results, mode='w') as status:
             json.dump(output_obj, status)
 
+    output_obj['done'] = True
+    output_obj['status']['progress'] = 100
+
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) < 2:
+        print('Missing input directory argument.  Run this application as')
+        print('> python.exe predict_from_folder.py <absolute path to images>')
+    else:
+        main(sys.argv[1])

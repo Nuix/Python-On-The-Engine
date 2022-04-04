@@ -20,13 +20,15 @@ def predict(get_images):
     Images will be processed one at a time.
 
     :param get_images: This is a callback to get the images to make predictions for.  It should return a list of the
-                       images as numpy arrays, but with no other pre-processing done.  Images should be in the format
-                       as read from skimage.io.imread - that is shaped as [rows, columns, 3] with the 3 channels in RGB.
+                       images as pillow images, but with no other pre-processing done.  Images should be RGB - and
+                       should be shaped as [columns, rows, 3] with the 3 channels in RGB.
                        It would be nice of the implementer make get_images a generator that yields one image at a time
                        instead of making it return all images to be memory-friendly.
     :return: A list of results.  Each result is a tuple of up to 3 items, each item being the label and score:
-             [( (<label1>, <score1>), (<label2>, <score2>), (<label3>, <score3>))].  The length of the list matches
-             the number of images returned from the get_images method.
+             [..., ( (<label1>, <score1>), (<label2>, <score2>), (<label3>, <score3>) ), ...].  The length of the list
+             matches the number of images returned from the get_images method. If there was an error processing an image
+             that image's results will instead be a tuple with the word "ERROR" in the 0th position, and the exception
+             in the second position: [..., ('ERROR', <ImproperShapeException...>), ...]
     """
 
     predictions = []
