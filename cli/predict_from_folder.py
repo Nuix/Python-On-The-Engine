@@ -91,7 +91,7 @@ def main(input_dir):
         with open(results, mode='w') as status:
             json.dump(output_obj, status)
 
-    output_obj['done'] = True
+    output_obj['status']['done'] = True
     output_obj['status']['progress'] = 100
 
     with open(results, mode='w') as status:
