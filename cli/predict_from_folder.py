@@ -1,8 +1,7 @@
 import json
 import os
 
-from skimage.io import imread
-
+from PIL import Image
 from img_classifier import predictor
 
 """
@@ -36,46 +35,59 @@ be updated as well.  The results should not be considered correct until the "don
 errors list is empty then there was no error and all images were successful.
 """
 
-input_dir = r"C:\Projects\RestData\Exports\Enron Images\Items"
+input_dir = r"C:\Projects\RestData\Exports\Enron Images\Items\sub"
 results = os.path.join(input_dir, 'inference.json')
 
 
 def get_file_list(folder):
     return [os.path.join(folder, name) for name in os.listdir(folder)
-            if os.path.isfile(os.path.join(folder, name)) and name.endswith('.jpg')]
+            if os.path.isfile(os.path.join(folder, name)) and name.lower().endswith('.jpg')]
 
 
-def get_image_generator(file_list, status_obj):
+def get_image_generator(file_list, output_obj):
+    status_obj = output_obj['status']
     item_count = len(file_list)
 
     def read_image():
         for index, image in enumerate(file_list):
-            yield imread(image)
+            img_pixels = Image.open(image).convert('RGB')
+            print(f'{image}: {img_pixels.size}')
+            yield img_pixels
             status_obj['current_item'] = index + 1
             percent_complete = int((index / item_count) * 100)
             status_obj['progress'] = percent_complete
-            with os.open(results) as status:
-                json.dump(status_obj, status)
+            with open(results, mode='w') as status:
+                json.dump(output_obj, status)
 
     return read_image
 
+
 def main():
     image_list = get_file_list(input_dir)
-    status_obj = {'total': len(image_list), 'done': False, 'progress': 0, 'current_item': 0, 'errors': [], 'results': {}}
-    with os.open(results) as status:
-        json.dump(status_obj, status)
 
-    inferences = predictor.predict(get_image_generator(image_list, status_obj))
-
+    errors = []
+    status_obj = {'total': len(image_list), 'done': False, 'progress': 0, 'current_item': 0, 'errors': errors}
     inference_results = {}
-    status_obj['results'] = inference_results
+    output_obj = {'status': status_obj, 'results': inference_results}
+
+    with open(results, mode='w') as status:
+        json.dump(output_obj, status)
+
+    inferences = predictor.predict(get_image_generator(image_list, output_obj))
+
     for index, inference in enumerate(inferences):
         img = image_list[index]
         img_classes = []
-        for result in inference:
-            img_classes.append({result[0]: result[1]})
-        inference_results[img] = img_classes
+        if 'ERROR' == inference[0]:
+            errors.append(f'{img}: {inference[1]}')
+        else:
+            for result in inference:
+                img_classes.append({result[0]: str(result[1])})
+            inference_results[img] = img_classes
 
-        with os.open(results) as status:
-            json.dump(status_obj, status)
+        with open(results, mode='w') as status:
+            json.dump(output_obj, status)
 
+
+if __name__ == "__main__":
+    main()
