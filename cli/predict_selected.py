@@ -50,6 +50,7 @@ import time
 from subprocess import Popen, PIPE
 
 # Where the images should be exported to.  Also where the results will be written to.
+# WARNING: The contents WILL be deleted at the end - don't use a folder with existing content!
 working_path = r'C:\Projects\RestData\Exports\temp'
 
 # Top level of the python path to find the CLI and classification scripts.
