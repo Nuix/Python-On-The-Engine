@@ -4,6 +4,7 @@ from tensorflow.keras.applications.resnet50 import decode_predictions
 from tensorflow.keras.applications.resnet50 import ResNet50
 
 MODEL_IMG_SIZE = 224  # in pixels
+model = ResNet50(weights='imagenet')
 
 
 def predict(get_images):
@@ -32,7 +33,6 @@ def predict(get_images):
     """
 
     predictions = []
-    model = ResNet50(weights='imagenet')
     index = 0
     for img_pixels in get_images():
         # Resize to required images for the model

@@ -177,7 +177,8 @@ def export_selection(output_dir):
         os.makedirs(output_dir)
 
     items_to_export = [item for item in current_selected_items if
-                       item.getName().lower().endswith('.jpg') or item.getName().lower().endswith('.jpeg')]
+                       item.getCorrectedExtension().lower().endswith('jpg') or
+                       item.getCorrectedExtension().lower().endswith('jpeg')]
     exporter = build_exporter(output_dir)
     exporter.exportItems(items_to_export)
     return len(items_to_export)

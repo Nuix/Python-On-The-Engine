@@ -85,10 +85,8 @@ def write_metadata(item, predictions):
 
 
 def get_prediction(item):
-    if item.getCorrectedExtension() == 'jpeg' or \
-            item.getCorrectedExtension() == 'JPEG' or \
-            item.getCorrectedExtension() == 'jpg' or \
-            item.getCorrectedExtension() == 'JPG':
+    if item.getCorrectedExtension().lower() == 'jpeg' or \
+            item.getCorrectedExtension().lower() == 'jpg':
         item_guid = item.getGuid()
         item_filename = item.getLocalisedName()
 
