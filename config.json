@@ -1,0 +1,39 @@
+{
+  "rest": {
+    "host": "http://localhost",
+    "port": "8080",
+    "case_name": "Enron",
+    "search": {
+      "search_query": "*",
+      "page_size": 1000
+    },
+    "export": {
+      "path": "C:/Projects/Playground/Temp",
+      "subfolder": "export_{id}",
+      "tag_format": "export|{year}.{month}.{day}|pg{page}",
+      "tag_query": "tag:{export_tag}",
+      "workers": 2
+    }
+  },
+  "license": {
+    "type": "enterprise-workstation",
+    "workers": 4,
+    "location_type": "cloud-server",
+    "location": "https://licence-api.nuix.com"
+  },
+  "java": {
+    "user": "Inspector Gadget",
+    "user-dirs": "C:\\Projects\\RestData",
+    "nuix-engine": "C:\\Projects\\nuix-engine",
+    "ssl_type": "non-fips"
+  },
+  "cli": {
+    "data-dir": "C:\\Projects\\RestData\\Exports\\temp",
+    "python-path": "C:\\Projects\\Python\\Python-On-The-Engine",
+    "app-script": "cli\\predict_from_folder.py",
+    "python-environment": "C:\\Projects\\Python\\Python-On-The-Engine\\env"
+  },
+  "service": {
+    "host": "http://127.0.0.1:8982"
+  }
+}
