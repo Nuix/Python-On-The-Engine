@@ -12,11 +12,24 @@ app = Flask(__name__)
 
 @app.route('/health', methods=['GET'])
 def hello():
+    """
+    Simple health check.
+    :return: JSON with {success: True}
+    """
     return json.dumps({'success': True})
 
 
 @app.route('/predict/<image_guid>', methods=['POST'])
 def predict(image_guid):
+    """
+    Run a prediction on the provided image.  The image GUID is provided in the URL and its content is provided in the
+    body of the request.  The request should be formatted as a MultiPart Form File Upload.  This runs the classier
+    and generates the response stored in the JSON keyed to the image's GUID, so the results can be assigned to the
+    correct image upon receipt.
+    :param image_guid: The GUID of the image / item to be classified
+    :return: JSON - a list of classifications assigned to the image GUID.  The format will be:
+             { 'results': { '<image_guid>': [{'<class1>': <score1>}, {'<class2>': <score2>}, ...}}
+    """
     if image_guid is None:
         return {'error': 'No GUID provided to identify image.'}, 400
 
