@@ -275,3 +275,4 @@ if __name__ == "__builtin__":
         execute_scoring(working_path)
         monitor_progress(working_path)
         process_results(working_path)
+        cleanup(working_path)

@@ -38,6 +38,12 @@ errors list is empty then there was no error and all images were successful.
 
 
 def get_file_list(folder):
+    """
+    Generate a list of all the files in the folder which will be processed.  The folder itself, and all subfolders
+    recursively will be examined for JPEG files.  All found JPEG files will have their full path added to the list.
+    :param folder: The root path to search for images to analyze
+    :return: A list of all JPEGs in the root folder or any of its children.
+    """
     file_paths = []
     for root, dirs, names in os.walk(folder):
         for name in names:
@@ -47,10 +53,23 @@ def get_file_list(folder):
 
 
 def get_image_generator(file_list, output_obj, output_file):
+    """
+    This is an enclosure for the Image Generator to be provided to the predictor.  This method holds the
+    data source and returns the generator function.
+    :param file_list: List of files to predict
+    :param output_obj: The data object to use for storing status results in
+    :param output_file: The file to which status updates should be written
+    :return: A function which will yield images in PIL format when called.
+    """
     status_obj = output_obj['status']
     item_count = len(file_list)
 
     def read_image():
+        """
+        Open images from the provided list, turn them into PIL formatted RGB images, and
+        return them one at a time.
+        :return: Yields 1 RGB PIL image at a time.
+        """
         for index, image in enumerate(file_list):
             img_pixels = Image.open(image).convert('RGB')
             print(f'{image}: {img_pixels.size}')
@@ -66,31 +85,42 @@ def get_image_generator(file_list, output_obj, output_file):
 
 def main(input_dir):
     results = os.path.join(input_dir, 'inference.json')
+
+    # Get the list of images to predict
     image_list = get_file_list(input_dir)
 
+    # Build the objects that will hold results
     errors = []
     status_obj = {'total': len(image_list), 'done': False, 'progress': 0, 'current_item': 0, 'errors': errors}
     inference_results = {}
     output_obj = {'status': status_obj, 'results': inference_results}
 
+    # Initialize the results file
     with open(results, mode='w') as status:
         json.dump(output_obj, status)
 
+    # Call the prediction, using the image generator as source
     inferences = predictor.predict(get_image_generator(image_list, output_obj, results))
 
+    # Write the predictions into the results file
     for index, inference in enumerate(inferences):
         img = image_list[index]
         img_classes = []
+
         if 'ERROR' == inference[0]:
+            # If there was an error predicting an image, pass the error along with the image that caused it
             errors.append(f'{img}: {inference[1]}')
         else:
+            # Add the predictions for each image to a list, and assign the list to the image's results
             for result in inference:
                 img_classes.append({result[0]: str(result[1])})
             inference_results[img] = img_classes
 
+        # Output the results for the image
         with open(results, mode='w') as status:
             json.dump(output_obj, status)
 
+    # Signal the completion of work
     output_obj['status']['done'] = True
     output_obj['status']['progress'] = 100
 
