@@ -9,7 +9,8 @@ What is needed to run the Worker Side Script example
 What is needed to run the Interactive Console Script example
 
 ## Run Python from the Command Line Interface
-This package consist of three parts:
+The `cli` package is designed as an example of calling an external Python application using the command line or shell.
+It consists of three parts:
 1. The `img_classifier` package: An external application that uses Keras to do some image classification.  See the 'Image Classification Side Project' for more information.
 2. `cli.predict_from_folder.py`: A Command Line Interface wrapper around the above code so it can take in parameters and run the prediction.  This needs an external Python environment to run in.  See 'The External Environment' below for details.
 3. `cli.predict_selected.py`: A script to run from the Interactive Scripting Console inside Nuix Workstation.
@@ -20,7 +21,7 @@ some that are JPEGs (with jpg, or jpeg extensions).  Launch the interactive scri
 using the Show Console action.  Copy the contents of `cli.predict_selected.py` into the console.  You will need to 
 modify some values at the top of the script:
 
-```
+```python
 # Where the images should be exported to.  Also where the results will be written to.
 # WARNING: The contents WILL be deleted at the end - don't use a folder with existing content!
 working_path = r'C:\Projects\RestData\Exports\temp'
@@ -59,7 +60,38 @@ directory.  However, when you do this, you don't get to see the output in the co
 progress in scripts (see the NX repository on our GitHub) but doing so was beyond the scope of these examples.
 
 ## Connect to a Python Microservice
-What is needed to run the Microservice example
+The `microservice` package is an example of using an external Python microservice from inside the Nuix Workstation.  It
+is similar to the `cli` package in design and purpose, the difference being how the external application runs and
+therefore how you interact with it.  This package consists of three parts:
+1. The `img_classifier` package: An external application that uses Keras to do some image classification.  See the 'Image Classification Side Project' for more information.
+2. `microservice.predict_service.py`: A Flask application that wraps the image classifier so the prediction can be accessed as a microservice.  This needs the external Python environment to run.  See 'The External Environment' below for details.
+3. `microservice.predict_selected.py`: A script to run from the Interactive Scripting Console inside Nuix Workstation.
+
+To run this example, ensure you have a  properly configured external Python environment described below to run the
+prediction and Flask application in.  In addition to installing the environment, you will also need to configure some
+parameters for the Flask application.  When testing this code, I used the following Environment Variables to do so:
+* `FLASK_RUN_PORT=8982`: Configures the port to use to access the service.
+* `FLASK_ENV=development`: Turns debug on, limits access to localhost, and reloads code changes
+* `FLASK_APP=microservice.predict_service`: Sets the `microservice.predict_service` as the Flask entry point
+
+When running the Flask application, the root of this repository should be the Working Directory so the `microservice.
+predict_service` script can be found.  See the Flask documentation for more detailed configuration options.
+
+You should launch the Flask microservice prior to trying to connect to it from Workstation.  Once you have it running
+launch Nuix Workstation, load a case, and select some images with at least a few JPG images selected.  Then open
+the interactive scripting console using Scripts > Show Console.  Copy the contents of `microservice.predict_selected` to
+the Script part of the console.  You may need to make some adjustments to script as follows:
+```python
+HOST = 'http://127.0.0.1:8982'
+```
+
+Adjust the HOST to properly reflect the URL of the host computer running the microservice.  If the microservice is
+running on the local computer and is in development mode, then leave the IP address as `127.0.0.1`, otherwise you may
+need to adjust it to the correct IP or Host Name for the computer.  Additionally, you should change the Port Number to
+match that provided to the `FLASK_RUN_PORT` environment variable.  If this value is not set then it defaults to 5000.
+
+With those changes made you can execute the script and you should start to see the requests and results show up in the
+bottom of the Console window.
 
 ## Connect to the RESTful Service
 What is needed to run the RESTful Client example
@@ -69,9 +101,15 @@ What is needed to run the Java API example
 
 ## The Image Classifier Side Project
 To demonstrate some previous examples, a more complex Python application was created as a stand in for
-why you might use the Command Line or Microservice strategies.
+why you might use the Command Line or Microservice strategies.  This is far from a real or complete image prediction
+or classification scheme - it just uses the pre-trained ResNet50 with weights from the imagenet library.  It is not
+suitable for e-forensics or discovery.  This project consists of a single predict method that takes in a sequence of
+PIL images and produces the top 3 predictions and their score.
 
-What is needed to run the Image Classifier code.
+This application is expected to run in a Python 3.9+ environment with Keras and TensorFlow.  See 'The External 
+Environment' below for how to make an environment suitable for running this.  This application itself doesn't actually
+run.  It is intended to be used along side the `cli` package to be run as a standalone Command Line application, or with
+the `microservice` package to be run inside a Flask application.
 
 ## The Python Environment
 For this repository, you can think of there being two separate Python environment.

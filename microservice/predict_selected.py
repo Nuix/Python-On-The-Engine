@@ -14,6 +14,14 @@ HOST = 'http://127.0.0.1:8982'
 
 
 def do_request(http_request):
+    """
+    Generic Request using HttpClient.  This wil create a new client, send the request, record the response, then
+    close the client.
+    :param http_request: The fully formed request to send.
+    :return: A tuple: [0] The Status Code, [1] If the status code is <300, send the body translated to a json object (
+                      dictionary).  If >= 300, then assume the body can't be turned to JSON and return the response
+                      directly.
+    """
     http_client = HttpClients.createDefault()
 
     try:
@@ -31,6 +39,16 @@ def do_request(http_request):
 
 
 def build_url(host, endpoint, query=None):
+    """
+    Build a URL out of constituent parts.
+    :param host: The host and port number
+    :param endpoint: Either a str representing the full path to the endpoint desired, or a list of strs which will be
+                     concatenated together with '/' to form the path to the desired resource
+    :param query: Either a str representing a fully formed query string minus the '?', a dict which will be translated
+                  to a query string, or a list, which is assumed to be in 'key=value' form and will be joined into
+                  a single query string.
+    :return: A single URL consisting of the host, path to the endpoint, and query string if provided.
+    """
     url_list = [host]
     if isinstance(endpoint, str):
         url_list.append(endpoint)
@@ -61,6 +79,17 @@ def build_url(host, endpoint, query=None):
 
 
 def get(host, endpoint, query=None, headers=None):
+    """
+    Perform a GET request to the given host and endpoint, providing the given query and headers to the request.
+    :param host: The host to GET from
+    :param endpoint: Either a str representing the full path to the endpoint desired, or a list of strs which will be
+                     concatenated together with '/' to form the path to the desired resource
+    :param query: Either a str representing a fully formed query string minus the '?', a dict which will be translated
+                  to a query string, or a list, which is assumed to be in 'key=value' form and will be joined into
+                  a single query string.
+    :param headers: A dictionary of headers to send with the request NOTE: Not Implemented!!
+    :return: A tuple: [0] Boolean on success, [1] The response body as returned by do_request(http_request)
+    """
     request = RequestBuilder.get(build_url(host, endpoint, query)).build()
 
     status, body = do_request(request)
@@ -69,6 +98,19 @@ def get(host, endpoint, query=None, headers=None):
 
 
 def post(host, endpoint, query=None, body=None):
+    """
+    Perform a POST request to the given host and endpoint, providing the given query and body to the request.
+    :param host: The host to POST to
+    :param endpoint: Either a str representing the full path to the endpoint desired, or a list of strs which will be
+                     concatenated together with '/' to form the path to the desired resource
+    :param query: Either a str representing a fully formed query string minus the '?', a dict which will be translated
+                  to a query string, or a list, which is assumed to be in 'key=value' form and will be joined into
+                  a single query string.
+    :param body: Something that can be coerced into an org.apache.http.entity.Entity, usually a direct subclass of
+                 said type
+    :return: A tuple: [0] True / False on the request success, [1] The response body as returned from
+                      do_request(http_request)
+    """
     request = RequestBuilder.post(build_url(host, endpoint, query)).setEntity(body).build()
 
     status, body = do_request(request)
@@ -76,6 +118,15 @@ def post(host, endpoint, query=None, body=None):
 
 
 def write_metadata(item, predictions):
+    """
+    Add the predictions to the selected item as custom metadata named 'image_classifier_top3'.  The predictions come
+    in as a list of pairs of values: the class and its score.  The class and value are combined using ":" and then the
+     pairs are concatenated together using ";".
+
+    :param item:  The item to add metadata to.
+    :param predictions: The list of dicts used to represent the prediction results.
+    :return: Nothing
+    """
     prediction_data = ';'.join([list(pred.items())[0][0] + ':' +
                                 str(round(float(list(pred.items())[0][1]) * 100, 2)) + '%'
                                 for pred in predictions]
@@ -85,6 +136,13 @@ def write_metadata(item, predictions):
 
 
 def get_prediction(item):
+    """
+    Get the image classification predictions for the given item.  If the item is a JPEG (has a .jpg or .jpeg extension)
+    it's binary will be retrieved and uploaded to the microservice to be classified.
+    :param item: The item to be classified
+    :return: A tuple: [0] True/False on the success of the classification, [1] The classifications or error if
+                      classification failed.
+    """
     if item.getCorrectedExtension().lower() == 'jpeg' or \
             item.getCorrectedExtension().lower() == 'jpg':
         item_guid = item.getGuid()
@@ -105,6 +163,12 @@ def get_prediction(item):
 
 
 def predict_all(item_list):
+    """
+    Classifies all the items on the list.  Sequentially get the classification for and update the metadata for each
+    item in the list.
+    :param item_list: List of items to classify.  Should be a non-empty list with JPEG files in it.
+    :return:  Nothing
+    """
     for item in item_list:
         print('Predicting ' + item.getLocalisedName())
         success, prediction = get_prediction(item)
@@ -114,11 +178,13 @@ def predict_all(item_list):
 
 
 if __name__ == '__builtin__':
+    # Make sure the microservice is reachable
     ok, content = get(HOST, 'health')
     print('Success: ' + str(ok))
 
     if ok:
         print('Connected: ' + str(content['success']))
+        # Predict all the selected items.
         predict_all(current_selected_items)
     else:
         print('Error, service health check failed: ' + str(content))
