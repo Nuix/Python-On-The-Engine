@@ -1,4 +1,12 @@
 """
+Author: Steven Luke (steven.luke@nuix.com)
+Date: 2022.04.06
+Nuix RESTful Service: 9.6.8
+Python Version 3.9
+
+Summary: Remove all the export tags from items in the current case, and delete those tags.
+
+Description:
 A side effect of the paged_export script is each item in the case will be tagged with an export|<date>|pgn tag.  Use
 this script to remove those tags.  Note: this will remove ALL tags with the above format.
 """

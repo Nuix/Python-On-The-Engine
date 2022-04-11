@@ -1,3 +1,30 @@
+"""
+Author: Steven Luke (steven.luke@nuix.com)
+Date: 2022.04.04
+Engine Version: 9.6.8
+
+Summary: Perform an image classification on the selected images in Nuix Workstation.
+
+Description:
+This script is intended to be used from inside the Nuix Workstation Scripting Console.  It will
+connect to a running Microservice using a REST-like API to run an image classification routine on selected JPG files.
+It will read the results of the classification from the response body and add it as metadata to the images.
+
+This script will read the binary for the JPEG and upload it to the microservice, one image at a time.  When the response
+body is received this script will read the results and add them to the image as custom metadata named
+'image_classier_top3'
+
+Requirements:
+A Python environment capable of running the image classification and Flask microservice.  For this example, the
+microservice.predict_service.py script is used as the entry point for the analysis, and that uses the
+img_classifier.predictor.py to run the classification.  Both of these scripts and the conda environment file used to run
+them are provided in the same repository as this script.
+
+Before running this script, have an open case and select some JPEG images.
+
+You may need to configure the HOST to point to the appropriate URL / host / IP address and Port where the microservice
+is running.  The configuration below assumes local host running on port 8982.
+"""
 import json
 
 from java.nio.charset import Charset

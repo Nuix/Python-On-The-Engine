@@ -1,3 +1,20 @@
+"""
+Author: Steven Luke (steven.luke@nuix.com)
+Date: 2022.04.06
+Nuix RESTful Service: 9.6.8
+Python Version 3.9
+
+Summary: Methods for performing REST calls.
+
+Description:
+This is a small library for making the basic REST calls.  This module supports GET, PUT, POST, PATCH, HEAD and DELETE.
+Each method requires a URL, and Headers to send with the request, and some require Data bodies) as well.  Each method
+will return the response status code and a dictionary created from the JSON response body.
+
+This library does not do anything to build the URL, handle query strings, or format body as proper key/value pairs.  It
+is necessary for the caller to properly format the URL, provide all proper headers and data.  The one thing this will
+do for the client is it will add Content-Length headers for those request that use a body.
+"""
 import requests
 
 

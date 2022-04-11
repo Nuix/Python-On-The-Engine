@@ -1,3 +1,20 @@
+"""
+Author: Steven Luke (steven.luke@nuix.com)
+Date: 2022.04.06
+Nuix RESTful Service: 9.6.8
+Python Version 3.9
+
+Summary: This module wraps some of the RESTful API endpoints into methods to make building request URLs a little easier.
+
+Description:
+This module has two classes used to make working with the API a bit easier.  It could be extended to include all
+the important or necessary endpoints for your application.
+
+ContentTypes: This holds predefined Content-Type and Accept strings to make accessing versioned endpoints easier
+
+NuixRestApi: This holds endpoints as strings and as functions.  The functions will take parameters and insert them
+             into the endpoint URL as needed.
+"""
 import json
 
 

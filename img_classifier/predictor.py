@@ -1,3 +1,19 @@
+"""
+Author: Steven Luke (steven.luke@nuix.com)
+Date: 2022.04.04
+Python Version: 3.9
+
+Summary: Implements an image classification predictor based on the ResNet50 model and the ImageNet training.
+
+Description:
+This is a simple, single-method implementation of an image classifier.  It uses a pre-made and open source model along
+with open source pre-trained weights, so the results will not be particularly good or appropriate for real-world use
+cases.  It is just meant as a sample use case.
+
+This is designed to be part of either a Command Line application (using the cli.predict_from_folder module) or
+Microservice application (using the microservice.predict_service module).  It does nothing on its own.
+
+"""
 from keras.preprocessing.image import img_to_array
 from tensorflow.keras.applications.resnet50 import preprocess_input
 from tensorflow.keras.applications.resnet50 import decode_predictions
@@ -9,11 +25,11 @@ model = ResNet50(weights='imagenet')
 
 def predict(get_images):
     """
-    Make predictions on a list of images and return the label and their probability and get the top 3 most likely
+    Make predictions on a list of images and return the labels and probabilities for the top 3 most likely
     classifications.
 
-    This function uses an unmodified version of the VGG16 model from the Oxford Visual Geometry Group.  It is not
-    intended for real use in a case, it is simply a demonstration of what could be used.
+    This function uses an unmodified version of the ResNet50 model.  It is not intended for real use in a case, it is
+    simply a demonstration of some work that would need to be done in an external Python application.
 
     The results are passed back as a list of tuples - each tuple containing the text label of prediction in position
     0, and the probability score in position 1.

@@ -1,5 +1,14 @@
 """
-This module contains some re-usable methods used for common tasks with the RESTful interface.
+Author: Steven Luke (steven.luke@nuix.com)
+Date: 2022.04.06
+Nuix RESTful Service: 9.6.8
+Python Version 3.9
+
+Summary: Contains some re-usable methods to make writing RESTful clients a little easier.
+
+Description:
+Provide common implementations of some tasks a lot of applications need, such as logging in and out, finding a case
+and monitoring an Asynch Function.
 """
 import os
 import json

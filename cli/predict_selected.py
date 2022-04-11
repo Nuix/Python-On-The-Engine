@@ -40,8 +40,6 @@ environment on the system path.
 Use the python_project_path variable to configure the path to the downloaded reposity.  It should
 point to the top level of the repository - it should have /cli and /img_classifier subfolders of the
 repository this script came in.
-
-
 """
 import json
 import os

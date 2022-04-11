@@ -1,12 +1,12 @@
-import json
-import os
-import sys
-
-from PIL import Image
-from img_classifier import predictor
-
 """
-Run an inference on all JPG images in the input directory.  Write the an inference.json file with the results.  The
+Author: Steven Luke (steven.luke@nuix.com)
+Date: 2022.04.05
+Python Version: 3.9
+
+Summary: Command line application to run a prediction on images stored in a folder.
+
+Description:
+Run an inference on all JPG images in the input directory.  Write out an inference.json file with the results.  The
 JSON output will have two sections:
 {
     "status": <progress of the analysis>,
@@ -35,6 +35,12 @@ The results file will be regularly updated with the status and progress, at whic
 be updated as well.  The results should not be considered correct until the "done" status returns true.  If the
 errors list is empty then there was no error and all images were successful.
 """
+import json
+import os
+import sys
+
+from PIL import Image
+from img_classifier import predictor
 
 
 def get_file_list(folder):

@@ -1,3 +1,46 @@
+"""
+Author: Steven Luke (steven.luke@nuix.com)
+Date: 2022.04.06
+Nuix RESTful Service: 9.6.8
+Python Version 3.9
+
+Summary: Example application using the RESTful API through Python.  It exports files in pages so the process can be
+chunked.
+
+Description:
+Uses a Paged Search to create tags for chunks of items to export, and can be used to export those items.  This
+module can be run in two modes:
+
+1: First, run the application with no command line.  This will iterate over the case and tag items for export.
+2: Then run the application with date and page number to identify what group of items to export to actually
+   export those items
+
+This application uses a JSON file to configure things like the size of a page, the format of the tag to make,
+and the directory where items will be exported to.  Items will be exported with their original names when possible
+and containers will be unpacked.
+
+To mark items for export run:
+`> python restful.paged_export.py`
+This will mark items with tags as follows (if run on April 6, 2022):
+export
+  2022.04.06
+    pg1
+    pg2
+    pg3
+    ...
+
+To export the items run:
+`> python restful.paged_export.py <year>.<month>.<day> <page num>`
+Where <year> is the four digit year, <month> is the two-digit month, and <day> is the two-digit day of the date the
+export tags were created, and <page num> is the page number to export.  For example:
+`> python restful.paged_export.py 2022.04.06 3`
+Would export all items with the following tag:
+export
+  2022.04.06
+    pg3
+
+The tags are persistent and can be removed from the items using the restful.remove_export_tags application.
+"""
 import datetime
 import math
 import sys
