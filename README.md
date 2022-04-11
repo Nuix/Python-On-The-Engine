@@ -2,12 +2,6 @@
 There are multiple ways to use Python with the Nuix Engine.  This repository is made as a companion to the "Python On
 The Engine" blog post. <TODO Create a Link>  It demonstrates some of the methods to methods described in the blog.
 
-## Worker Side Scripts
-What is needed to run the Worker Side Script example
-
-## Interactive Console
-What is needed to run the Interactive Console Script example
-
 ## Run Python from the Command Line Interface
 The `cli` package is designed as an example of calling an external Python application using the command line or shell.
 It consists of three parts:
