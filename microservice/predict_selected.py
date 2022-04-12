@@ -44,7 +44,7 @@ def do_request(http_request):
     """
     Generic Request using HttpClient.  This wil create a new client, send the request, record the response, then
     close the client.
-    :param http_request: The fully formed request to send.
+    :param http_request: org.apache.http.client.methods.HttpUriRequest, The fully formed request to send.
     :return: A tuple: [0] The Status Code, [1] If the status code is <300, send the body translated to a json object (
                       dictionary).  If >= 300, then assume the body can't be turned to JSON and return the response
                       directly.

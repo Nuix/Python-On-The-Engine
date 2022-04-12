@@ -104,7 +104,7 @@ def execute_scoring(path_to_images):
     :return: The Process object inside which the Python application is run, incase it is needed for monitoring purposes.
              The stdout is PIPEd so it can be read from the returned Process object.
     """
-    python_script = python_project_path + '\\' + predict_script
+    python_script = os.path.join(python_project_path, predict_script)
 
     cmd_args = ['python.exe', python_script, path_to_images]
 
