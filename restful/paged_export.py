@@ -235,49 +235,48 @@ if __name__ == "__main__":
         print("Failed to Log in.")
         exit(1)
 
-    case_of_interest = config['case_name']
-    ok, case_id = ute.find_caseid_for_name(case_of_interest, headers)
-    if not ok:
-        print(f"The case \"{case_of_interest}\" was not found.  Reason: {case_id}")
-        exit(2)
-
     try:
-        if len(sys.argv) == 1:
-            # No arguments == label items for export
+        case_of_interest = config['case_name']
+        ok, case_id = ute.find_caseid_for_name(case_of_interest, headers)
+        if not ok:
+            print(f"The case \"{case_of_interest}\" was not found.  Reason: {case_id}")
+            exit(2)
 
-            # Change this to adjust the number of items to adjust per page #
-            page_size = config['search']['page_size']
-            tag_for_export(case_id, page_size)
-
-        else:
-            page = None
-            date = None
-            errors = []
-            for arg in range(1, len(sys.argv)):
-                arg_pair = sys.argv[arg].split(":")
-                if len(arg_pair) < 2:
-                    errors.append("Argument not formatted correctly.  Expected <key>:<value>, and got {arg}")
-                elif "date" in arg_pair[0]:
-                    date = arg_pair[1]
-                elif "page" in arg_pair[0]:
-                    page = arg_pair[1]
-
-            if len(errors) != 0:
-                print("Incorrect arguments for exporting:")
-                for error in errors:
-                    print(f"    {error}")
-                print("To export do python.exe Nuix_Paged_Export.py date:<date> page:<page>")
-                exit(6)
-
-            if page is None or date is None:
-                print("To export, you need to enter the date and page to export.")
-                print("To mark items for export: python.exe Nuix_Paged_Export.py")
-                print("To export: python.exe Nuix_Paged_Export.py date:<date> page:<page>")
-                exit(7)
-
-            export_tagged_items(case_id, date, page)
-    finally:
         try:
-            ute.close_case(case_id, headers)
+            if len(sys.argv) == 1:
+                # No arguments == label items for export
+
+                # Change this to adjust the number of items to adjust per page #
+                page_size = config['search']['page_size']
+                tag_for_export(case_id, page_size)
+            else:
+                page = None
+                date = None
+                errors = []
+                for arg in range(1, len(sys.argv)):
+                    arg_pair = sys.argv[arg].split(":")
+                    if len(arg_pair) < 2:
+                        errors.append("Argument not formatted correctly.  Expected <key>:<value>, and got {arg}")
+                    elif "date" in arg_pair[0]:
+                        date = arg_pair[1]
+                    elif "page" in arg_pair[0]:
+                        page = arg_pair[1]
+
+                if len(errors) != 0:
+                    print("Incorrect arguments for exporting:")
+                    for error in errors:
+                        print(f"    {error}")
+                    print("To export do python.exe Nuix_Paged_Export.py date:<date> page:<page>")
+                    exit(6)
+
+                if page is None or date is None:
+                    print("To export, you need to enter the date and page to export.")
+                    print("To mark items for export: python.exe Nuix_Paged_Export.py")
+                    print("To export: python.exe Nuix_Paged_Export.py date:<date> page:<page>")
+                    exit(7)
+
+                export_tagged_items(case_id, date, page)
         finally:
-            ute.logout(headers)
+            ute.close_case(case_id, headers)
+    finally:
+        ute.logout(headers)

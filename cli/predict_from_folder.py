@@ -79,6 +79,7 @@ def get_image_generator(file_list, output_obj, output_file):
         for index, image in enumerate(file_list):
             img_pixels = Image.open(image).convert('RGB')
             print(f'{image}: {img_pixels.size}')
+            sys.stdout.flush()
             yield img_pixels
             status_obj['current_item'] = index + 1
             percent_complete = int((index / item_count) * 100)

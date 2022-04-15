@@ -44,7 +44,9 @@ repository this script came in.
 import json
 import os
 import re
+import sys
 import time
+from threading import Thread
 from subprocess import Popen, PIPE
 
 # Where the images should be exported to.  Also where the results will be written to.
@@ -64,6 +66,8 @@ results_poll_time = 3  # in seconds
 # The name of the results file generated during image classification
 results_json_filename = 'inference.json'
 
+# If this is set to True, then stdout from the image classifier will be displayed in Nuix Workstation
+view_img_classifier_output = False
 
 def initialize_environment():
     """
@@ -95,6 +99,23 @@ def monitor_export_process(item_process_info):
           )
 
 
+def get_process_monitor(prediction_process):
+    def monitor():
+        return_code = None
+        while return_code is None:
+            return_code = prediction_process.poll()
+            if return_code is None:
+                output = prediction_process.stdout.readline()
+            else:
+                output = 'Return Code: ' + str(return_code) + os.linesep
+                output += os.linesep.join(prediction_process.stdout.readlines()) + os.linesep
+
+            if view_img_classifier_output:
+                print(output)
+
+    return monitor
+
+
 def execute_scoring(path_to_images):
     """
     Start the external Python process for image classification.  This method is asynchronous - the process will be
@@ -109,6 +130,9 @@ def execute_scoring(path_to_images):
     cmd_args = ['python.exe', python_script, path_to_images]
 
     predict_process = Popen(cmd_args, stdout=PIPE, universal_newlines=True, shell=True)
+
+    monitor_thread = Thread(target=get_process_monitor(predict_process), name='Prediction Monitor')
+    monitor_thread.start()
 
     return predict_process
 
