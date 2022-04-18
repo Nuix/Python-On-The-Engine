@@ -163,12 +163,12 @@ def claim_license(engine):
 
         # Then further filter down base on their type
         for available_license in license_source.findAvailableLicences():
-            license_type = available_license.getShortName()
-            print(f'Inspecting License Type {license_type}')
+            license_short_name = available_license.getShortName()
+            print(f'Inspecting License Type {license_short_name}')
 
             can_choose_workers = available_license.canChooseWorkers()
             available_workers = available_license.getWorkers()
-            if LICENSE_TYPE == license_type:
+            if LICENSE_TYPE == license_short_name:
                 print(f'Candidate License Source Found.')
 
                 # Claim our desired number of workers
@@ -177,7 +177,7 @@ def claim_license(engine):
                 else:
                     available_license.acquire()
 
-                print(f'Acquired {license_type} from [{license_source.getType()}] {license_source.getLocation()}')
+                print(f'Acquired {license_short_name} from [{license_source.getType()}] {license_source.getLocation()}')
 
                 # And return the licensed engine after the first matching license is claimed
                 return engine

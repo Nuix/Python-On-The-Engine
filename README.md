@@ -88,7 +88,63 @@ With those changes made you can execute the script and you should start to see t
 bottom of the Console window.
 
 ## Connect to the RESTful Service
-What is needed to run the RESTful Client example
+The `restful` package uses a running instance of the Nuix RESTful Service to call into the Nuix Engine from an external
+application.  It requires a separate, running instance of the RESTful Service - see this documentation on how to set it
+up: https://nuix.github.io/sdk-docs/latest/products/core_engine/rest_api.html.
+
+The external Python application has minimal requirements - just the `requests` library which can be installed from pip
+or Anaconda.  The repository has an environment.yml file which can be used to create a full Anaconda environment that
+can be used with the code here.  The application will do a paged search for all items in a case, tag each item on a page,
+and then export the items of a particular page - for example if you had limited space to export to you could first split
+all the items into 1000 items count pages using tags.  Then export one page at a time, process the export, clear the
+exported data, and do the next page.  It also has an module which will clear the tags used to mark items for export.
+
+All the configuration for the application can be found in the `config.json` file at the base of the repository.  The
+pertinent settings are:
+```json
+{
+  "rest": {
+    "host": "http://localhost",
+    "port": "8080",
+    "case_name": "Enron",
+    "search": {
+      "search_query": "*",
+      "page_size": 1000
+    },
+    "export": {
+      "path": "C:/Projects/Playground/Temp",
+      "subfolder": "export_{id}",
+      "tag_format": "export|{year}.{month}.{day}|pg{page}",
+      "tag_query": "tag:{export_tag}",
+      "workers": 2
+    }
+  },
+  "license": {
+    "type": "enterprise-workstation",
+    "workers": 4,
+    "location_type": "cloud-server",
+    "location": "https://licence-api.nuix.com"
+  }
+}
+```
+
+The first section, `rest` is used for configuring the connection with the RESTful service:
+* `host`: Host name for accessing the REST server
+* `port`: Port number the REST uses to communicate on.
+* `case_name` The sample code will connect to a particular case to export.  Supply the name of the case name here.
+* `search.search_query`: This is the initial search query used to tag items for export.  The setting here tags all items, but you might use some query to limit the items to be exported.
+* `search.page_size`: The number of items per 'page' to be exported.
+* `export.path`: Full path to the folder where items will be exported.  Items will be exported into a sub-folder in this directory.
+* `export.subfolder`: The format of the subfolder name to export.  The {id} will be replaced by the page number being exported
+* `export.tag_format`: Format of the tag that will be added to items for export.  Use the `|` character to create sub-tags.  User {page} to insert the page number, and {day}, {month}, and {year} to insert the date
+* `export.tag_query`: Query to use to find the items to export.  Use {export_tag} to insert the calculated export tag (as per the `export.tag_format`).  This gives the opportunity to further limit what items to export.
+* `export.workers`: Provide the number of workers to dedicate to the export job
+
+The next section is about configuring the `license` to use for this session:
+* `type`: The short name of the license type to acquire
+* `workers`: Number of workers to claim, if applicable to the license type
+* `location_type`: The type of the license source to use, such as cloud-server, or NMS server.
+* `location`: The host name of the license source to use.
 
 ## Run the Nuix Engine Java API from Python
 What is needed to run the Java API example
