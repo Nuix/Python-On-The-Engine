@@ -1,3 +1,4 @@
+![Last tested in Nuix 9.6](https://img.shields.io/badge/Nuix-9.6-green.svg)
 # Python-On-The-Engine
 There are multiple ways to use Python with the Nuix Engine.  This repository is made as a companion to the "Python On
 The Engine" blog post. <TODO Create a Link>  It demonstrates some of the methods to methods described in the blog.
@@ -147,7 +148,31 @@ The next section is about configuring the `license` to use for this session:
 * `location`: The host name of the license source to use.
 
 ## Run the Nuix Engine Java API from Python
-What is needed to run the Java API example
+The `engine_in` package provides a code example of how to use pyjnius as a tool to include the Nuix Engine's Java API
+in your Python application.  It is a simple 'log in' hello world equivalent.  It requires the pyjnius libarary which can
+be installed via pip.  See their GitHub repository for details on how to install and use it: 
+https://github.com/kivy/pyjnius.  The environment.yml included with this repository contains all the libraries you need
+to run the example.
+
+In order to use pyjnius, you must have a configured Java Virtual Machine - which means a properly set up JAVA_HOME,
+CLASSPATH, and PATH which contains the jvm.dll.  Since the Nuix Engine is distributed with a JVM and we also need to
+ensure the Nuix Engine's libraries are available to the Python application, the application should use the Engine's
+install path as the source of the JVM for pyjnius.  This is done in code using the following configuration:
+
+```python
+nuix_engine_path = r'C:\Projects\nuix-engine'
+```
+
+The JAVA_HOME, CLASSPATH, and PATH will be modified based on subdirectories of the path provided here.  These settings
+are made for the running application only and will not permanently change the operating system's configuration.
+
+Additional settings are needed to setup the license and how the Engine identifies who is using the application:
+* `NUIX_USER`: The caseworker that will be associated with changes made while the application is running
+* `USER_DATA_DIR`: The directory Nuix will use for user data, such as profiles and scripts.
+* `LICENSE_TYPE`: Short name for the license type to use
+* `LICENSE_SOURCE_TYPE`: The type of the license source, such as cloud-server or NMS.
+* `LICENSE_SOURCE_LOCATION`: The host name of the license source to use
+* `WORKER_COUNT`: Number of workers to claim for use during this application, if allowed by the license type.
 
 ## The Image Classifier Side Project
 To demonstrate some previous examples, a more complex Python application was created as a stand in for
