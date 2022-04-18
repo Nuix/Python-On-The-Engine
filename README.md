@@ -5,7 +5,7 @@ The Engine" blog post. <TODO Create a Link>  It demonstrates some of the methods
 
 ## Table of Contents
 1. [Run Python from the Command Line Interface](#cli)
-2. [Connect to a Python Microservice](#Connect_to_a_Python_Microservice)
+2. [Connect to a Python Microservice](#Connect-to-a-Python-Microservice)
 
 <a name="cli"></a>
 ## Run Python from the Command Line Interface
