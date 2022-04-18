@@ -147,17 +147,17 @@ The next section is about configuring the `license` to use for this session:
 * `location_type`: The type of the license source to use, such as cloud-server, or NMS server.
 * `location`: The host name of the license source to use.
 
-The application can be run in three different ways:
-1. `python restful\paged_export.py`: With no parameters, the application will tag all items matching the search query for export, but does not do the export.
-2. `python restful\paged_export.py date:<year>.<month>.<day> page:<page>`: With the date and page parameters, export the items marked with the matching date and page export tags
+The application should be run with the repository's base directory as the working directory so the config.json file
+is found and the relative packages work as expected. The application can be run in three different ways:
+1. `> python restful\paged_export.py`: With no parameters, the application will tag all items matching the search query for export, but does not do the export.
+2. `> python restful\paged_export.py date:<year>.<month>.<day> page:<page>`: With the date and page parameters, export the items marked with the matching date and page export tags
    * year is a 4 digit year
    * month and day do not have leading 0s
    * page does not have leading zeroes, and is a 1s based index
    * example `python restful\paged_export.py date:2022.4.7 page:3`
-3. `python restful\remove_export_tags.py`: Removes all export tags from the case, rather than adding tags or exporting
+3. `> python restful\remove_export_tags.py`: Removes all export tags from the case, rather than adding tags or exporting
 
-The application should be run with the repository's base directory as the working directory so the config.json file
-is found and the relative packages work as expected.
+The application uses two environment variables to log in to the license server: `nuix_user` and `nuix_password`. 
 
 The `restful` package has the following contents:
 * `nuix_api.py`: Contains the following classes:
@@ -194,6 +194,15 @@ Additional settings are needed to setup the license and how the Engine identifie
 * `LICENSE_SOURCE_TYPE`: The type of the license source, such as cloud-server or NMS.
 * `LICENSE_SOURCE_LOCATION`: The host name of the license source to use
 * `WORKER_COUNT`: Number of workers to claim for use during this application, if allowed by the license type.
+
+Run the application use the following command line from the top of the repository:
+```commandline
+> python engine_in\grab_license.py
+```
+The application uses two environment variables to log in to the license server: `nuix_user` and `nuix_password`.
+
+The `engine_in` package has a single file:
+* `grab_license.py`: The main entry point for the application - gets a licensed engine ready to do some work.
 
 ## The Image Classifier Side Project
 To demonstrate some previous examples, a more complex Python application was created as a stand in for
