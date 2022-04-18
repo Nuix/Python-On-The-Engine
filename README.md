@@ -147,6 +147,27 @@ The next section is about configuring the `license` to use for this session:
 * `location_type`: The type of the license source to use, such as cloud-server, or NMS server.
 * `location`: The host name of the license source to use.
 
+The application can be run in three different ways:
+1. `python restful\paged_export.py`: With no parameters, the application will tag all items matching the search query for export, but does not do the export.
+2. `python restful\paged_export.py date:<year>.<month>.<day> page:<page>`: With the date and page parameters, export the items marked with the matching date and page export tags
+   * year is a 4 digit year
+   * month and day do not have leading 0s
+   * page does not have leading zeroes, and is a 1s based index
+   * example `python restful\paged_export.py date:2022.4.7 page:3`
+3. `python restful\remove_export_tags.py`: Removes all export tags from the case, rather than adding tags or exporting
+
+The application should be run with the repository's base directory as the working directory so the config.json file
+is found and the relative packages work as expected.
+
+The `restful` package has the following contents:
+* `nuix_api.py`: Contains the following classes:
+  * `NuixRestApi`: A series of static methods for building the endpoint URLs used in the example code
+  * `ContentTypes`: Holds the three common Content-Type header strings used for the application
+* `nuix_utility.py`: Some common utility methods like logging in and out and finding a case by name.
+* `paged_export.py`: The main application entry point for tagging and exporting
+* `remove_export_tags.py`: Entry point application for removing tags from items
+* `rest_base.py`: Bottom level GET, POST, PUT, PATCH, HEAD, and DELETE REST calls 
+
 ## Run the Nuix Engine Java API from Python
 The `engine_in` package provides a code example of how to use pyjnius as a tool to include the Nuix Engine's Java API
 in your Python application.  It is a simple 'log in' hello world equivalent.  It requires the pyjnius libarary which can
