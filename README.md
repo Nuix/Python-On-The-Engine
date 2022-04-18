@@ -4,10 +4,13 @@ There are multiple ways to use Python with the Nuix Engine.  This repository is 
 The Engine" blog post. <TODO Create a Link>  It demonstrates some of the methods to methods described in the blog.
 
 ## Table of Contents
-1. [Run Python from the Command Line Interface](#cli)
-2. [Connect to a Python Microservice](#Connect to a Python Microservice)
+1. [Run Python from the Command Line Interface](#Run-Python-from-the-Command-Line-Interface)
+2. [Connect to a Python Microservice](#Connect-to-a-Python-Microservice)
+3. [Connect to the RESTful Service](#Connect-to-the-RESTful-Service)
+4. [Run the Nuix Engine Java API from Python](#Run-the-Nuix-Engine-Java-API-from-Python)
+5. [The Image Classifier Side Project](#The-Image-Classifier-Side-Project)
+6. [The Python Environment](#The-Python-Environment)
 
-<a name="cli"></a>
 ## Run Python from the Command Line Interface
 The `cli` package is designed as an example of calling an external Python application using the command line or shell.
 It consists of three parts:
