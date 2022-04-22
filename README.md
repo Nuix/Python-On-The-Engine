@@ -236,11 +236,11 @@ in engine script part of the Microservice sample uses the Apache Commons HttpCli
 
 ### The External Environment
 External scripts were all written using a common Anaconda environment.  The environment configuration file is provided
-in the 'environment.yml' file at the top level of this repository.  Note that this environment contains configuration
+in the `environment.yml` file at the top level of this repository.  Note that this environment contains configuration
 for the Microservice (Flask), the Image Classifier (SciKit Image, TensorFlow and Keras) the RESTful Service Client 
 (requests) as well as the Java In Python example (pyjnius).  So this environment will contain more than would be
 needed for any specific application based on one of these approaches.
 
 To duplicate this environment in Anaconda use the following command: 
-`conda env create -p C:\Projects\Python\Temp -f environment.yml`
+`conda env create -p C:\Projects\Python\Nuix -f environment.yml`
 
